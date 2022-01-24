@@ -1,0 +1,13 @@
+with Ranking as (
+    select year,Movie_Title,Production_Budget,RANK() OVER(PARTITION BY year order by Production_Budget desc) as rank
+    from 
+    (select
+     extract(YEAR from Release_Date) as year,Movie_Title,Production_Budget
+     from `nttdata-c4e-bde.uc1_3.Movie`
+    where Release_Date between '2016-01-01' and '2020-12-31'
+    )
+)
+select year,Movie_Title,Production_Budget,rank
+from Ranking
+where rank <=10
+order by year desc
